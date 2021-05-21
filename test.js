@@ -1,0 +1,3 @@
+function yay() {
+    return "wauw";
+}
