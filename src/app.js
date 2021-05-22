@@ -1,10 +1,11 @@
 const dotenv = require("dotenv");
-const dotenvConfig = dotenv.config();
 const express = require("express");
-const app = express();
 const fs = require("fs");
 
-app.use(express.static("public"));
+const dotenvConfig = dotenv.config();
+const app = express();
+
+app.use(express.static("src/public"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
