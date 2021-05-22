@@ -1,23 +1,28 @@
 const dotenv = require("dotenv");
-const dotenvConfig = dotenv.config();
 const express = require("express");
-const app = express();
 const fs = require("fs");
 
-app.use(express.static("public"));
+const dotenvConfig = dotenv.config();
+const app = express();
+
+app.use(express.static("src/public"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Components
-const header = fs.readFileSync(__dirname + "/public/components/header.html");
-const footer = fs.readFileSync(__dirname + "/public/components/footer.html");
+const navbar = fs.readFileSync(
+   __dirname + "/public/components/navbar/navbar.html"
+);
+const footer = fs.readFileSync(
+   __dirname + "/public/components/footer/footer.html"
+);
 // Screens
-const home = fs.readFileSync(__dirname + "/public/screens/home.html");
+const home = fs.readFileSync(__dirname + "/public/screens/home/home.html");
 
 const PORT = process.env.PORT || 3000;
 
 app.get("/", (req, res) => {
-   res.send(header + home + footer);
+   res.send(navbar + home + footer);
 });
 
 const server = app.listen(PORT, (error) => {
