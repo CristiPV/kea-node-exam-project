@@ -1,38 +1,52 @@
 const dotenv = require("dotenv");
 const express = require("express");
 const fs = require("fs");
-
+const http = require("http");
 const dotenvConfig = dotenv.config();
 const app = express();
+const server = http.createServer(app);
 
+const io = require("socket.io")(server);
 app.use(express.static("src/public"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Components
+// Files
 const navbar = fs.readFileSync(
-   __dirname + "/public/components/navbar/navbar.html"
+  __dirname + "/public/navbar/navbar.html"
 );
+const home = fs.readFileSync(__dirname + "/public/home/home.html");
 const footer = fs.readFileSync(
-   __dirname + "/public/components/footer/footer.html"
+  __dirname + "/public/footer/footer.html"
 );
-// Screens
-const home = fs.readFileSync(__dirname + "/public/screens/home/home.html");
 
-const PORT = process.env.PORT || 3000;
+// Sockets
+io.on("connection", (socket) => {
+  console.log("socket connected", socket.id);
 
-app.get("/", (req, res) => {
-   res.send(navbar + home + footer);
+  // when someone submits chat
+  socket.on("submitChat", (data) => {
+    // Update everyone's chat
+    io.emit("updateChat", data);
+  });
 });
 
-const server = app.listen(PORT, (error) => {
-   if (error) {
-      console.log(error);
-   }
+// Routes
+app.get("/", (req, res) => {
+  res.send(navbar + home + footer);
+});
 
-   if (dotenvConfig.error) {
-      console.log(".env error:", dotenvConfig.error);
-   }
+// App server setup
+const PORT = process.env.PORT || 3000;
 
-   console.log("Server started on port:", server.address().port);
+const appServer = server.listen(PORT, (error) => {
+  if (error) {
+    console.log(error);
+  }
+
+  if (dotenvConfig.error) {
+    console.log(".env error:", dotenvConfig.error);
+  }
+
+  console.log("Server started on port:", appServer.address().port);
 });

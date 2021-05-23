@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css"
+    />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="/styles/styles.css" />
+    <link rel="stylesheet" href="/navbar/navbar.css" />
+    <link rel="stylesheet" href="/footer/footer.css" />
+    <link rel="stylesheet" href="/home/home.css" />
+    <title>Drawtastic</title>
+  </head>
+  <body>
+    <div class="navBar">
+      <div class="left">
+        <ul>
+          <li><a href="#home">Home</a></li>
+          <li><a href="#news">News</a></li>
+          <li><a href="#contact">Contact</a></li>
+          <li><a href="">yo</a></li>
+
+        </ul>
+      </div>
+      <div class="middle">
+        <input id="username-input" type="text" placeholder="enter username for the chat" maxlength="20"></input>
+        <button class="btn btn-warning" id="username-input-button" onclick="setUsername(); empowerChat()">
+          Set Username
+        </button>
+      </div>
+      <div class="right">
+        <ul>
+          <li>
+            <a class="active" href="#about">About</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </body>
+</html>

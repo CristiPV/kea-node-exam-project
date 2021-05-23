@@ -1,0 +1,51 @@
+.navBar {
+  display: flex;
+  justify-content: space-between;
+  background-color: #e57575;
+  border: none !important;
+}
+
+.navBar ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+.navBar li {
+  float: left;
+}
+
+.navBar li a {
+  display: block;
+  color: white;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+}
+
+.left {
+  display: flex;
+  justify-content: flex-start;
+  width: 30%;
+}
+
+.middle {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 30%;
+}
+
+#username-input-button {
+  width: 6vw;
+  padding: 0;
+  margin-left: 0.3vw;
+  height: 34px;
+}
+
+.right {
+  display: flex;
+  justify-content: flex-end;
+  width: 30%;
+}
