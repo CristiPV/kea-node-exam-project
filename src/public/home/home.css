@@ -49,8 +49,9 @@
 
 .chat-text-container {
   display: flex;
-  flex-direction: column-reverse;
+  flex-direction: column;
   align-items: center;
+  overflow: scroll;
   height: 72vh;
   width: 27vw;
 }
