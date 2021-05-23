@@ -40,8 +40,48 @@
 }
 
 .chat-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   width: 30vw;
   height: 80vh;
+}
+
+.chat-text-container {
+  display: flex;
+  flex-direction: column-reverse;
+  align-items: center;
+  height: 72vh;
+  width: 27vw;
+}
+
+.chat-text {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  width: 100%;
+  border-bottom: 1px dashed rgb(204, 204, 204);
+}
+
+.chat-user {
+  display: flex;
+  align-items: flex-start;
+  width: 8vw;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.chat-message {
+  display: flex;
+  justify-content: flex-start;
+  text-align: left;
+  width: 19vw;
+}
+
+.chat-input-container {
+  height: 8vh;
+  width: 100%;
 }
 
 .draw-color {

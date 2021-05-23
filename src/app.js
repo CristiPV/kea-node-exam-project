@@ -6,8 +6,8 @@ const http = require("http");
 const dotenvConfig = dotenv.config();
 const app = express();
 const server = http.createServer(app);
-const io = require("socket.io")(server);
 
+const io = require("socket.io")(server);
 app.use(express.static("src/public"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -27,8 +27,10 @@ const footer = fs.readFileSync(
 io.on("connection", (socket) => {
   console.log("socket connected", socket.id);
 
-  socket.on("chatSubmit", (data) => {
+  // when someone submits chat
+  socket.on("submitChat", (data) => {
     console.log("chat message:", data);
+    // Update everyone's chat
     io.emit("updateChat", data);
   });
 });
@@ -41,7 +43,7 @@ app.get("/", (req, res) => {
 // App server setup
 const PORT = process.env.PORT || 3000;
 
-const appServer = app.listen(PORT, (error) => {
+const appServer = server.listen(PORT, (error) => {
   if (error) {
     console.log(error);
   }

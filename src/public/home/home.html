@@ -47,8 +47,20 @@
     </div>
   </div>
 
-  <div class="box chat-container col"></div>
+  <div class="box chat-container col">
+    <div class="chat-text-container">
+      <div class="chat-text">
+        <span class="chat-user">user-name-here :</span>
+        <span class="chat-message">chat-message-here</span>
+      </div>
+    </div>
+    <div class="chat-input-container">
+      <input id="chat-input" type="text" placeholder="Type a message"></input>
+      <button onclick="submitChat()">Send</button>
+    </div>
+  </div>
 </div>
 
-<script src="/home/home.js"></script>
+<script src="/socket.io/socket.io.js"></script>
 <script src="/home/sockets.js"></script>
+<script src="/home/home.js"></script>
