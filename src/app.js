@@ -1,7 +1,8 @@
+const { Socket } = require("dgram");
 const dotenv = require("dotenv");
 const express = require("express");
 const fs = require("fs");
-const http = require("htpp");
+const http = require("http");
 const dotenvConfig = dotenv.config();
 const app = express();
 const server = http.createServer(app);
@@ -13,17 +14,24 @@ app.use(express.urlencoded({ extended: true }));
 
 // Files
 const navbar = fs.readFileSync(
-  __dirname + "/public/components/navbar/navbar.html"
+  __dirname + "/public/navbar/navbar.html"
 );
 
-const home = fs.readFileSync(__dirname + "/public/screens/home/home.html");
+const home = fs.readFileSync(__dirname + "/public/home/home.html");
 
 const footer = fs.readFileSync(
-  __dirname + "/public/components/footer/footer.html"
+  __dirname + "/public/footer/footer.html"
 );
 
 // Sockets
+io.on("connection", (socket) => {
+  console.log("socket connected", socket.id);
 
+  socket.on("chatSubmit", (data) => {
+    console.log("chat message:", data);
+    io.emit("updateChat", data);
+  });
+});
 
 // Routes
 app.get("/", (req, res) => {
