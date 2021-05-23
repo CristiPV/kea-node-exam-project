@@ -1,4 +1,3 @@
-const { Socket } = require("dgram");
 const dotenv = require("dotenv");
 const express = require("express");
 const fs = require("fs");
@@ -16,9 +15,7 @@ app.use(express.urlencoded({ extended: true }));
 const navbar = fs.readFileSync(
   __dirname + "/public/navbar/navbar.html"
 );
-
 const home = fs.readFileSync(__dirname + "/public/home/home.html");
-
 const footer = fs.readFileSync(
   __dirname + "/public/footer/footer.html"
 );
@@ -29,7 +26,6 @@ io.on("connection", (socket) => {
 
   // when someone submits chat
   socket.on("submitChat", (data) => {
-    console.log("chat message:", data);
     // Update everyone's chat
     io.emit("updateChat", data);
   });
