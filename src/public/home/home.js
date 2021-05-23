@@ -12,71 +12,71 @@ let usingEraser = false;
 
 // Sidebar event handlers
 document
-   .getElementById("draw-color-picker")
-   .addEventListener("change", function () {
-      currentColor = this.value;
-   });
+  .getElementById("draw-color-picker")
+  .addEventListener("change", function () {
+    currentColor = this.value;
+  });
 document
-   .getElementById("draw-size-input")
-   .addEventListener("change", function () {
-      currentSize = this.value;
-      document.getElementById("draw-size-text").innerHTML =
-         "Size (" + this.value + ")";
-   });
+  .getElementById("draw-size-input")
+  .addEventListener("change", function () {
+    currentSize = this.value;
+    document.getElementById("draw-size-text").innerHTML =
+      "Size (" + this.value + ")";
+  });
 document.getElementById("draw-eraser").addEventListener("click", function () {
-   usingEraser = !usingEraser;
+  usingEraser = !usingEraser;
 });
 document.getElementById("draw-pencil").addEventListener("click", function () {
-   usingEraser = false;
+  usingEraser = false;
 });
 document.getElementById("draw-clear").addEventListener("click", function () {
-   ctx.fillStyle = "white";
-   ctx.fillRect(0, 0, canvas.width, canvas.height);
+  ctx.fillStyle = "white";
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
 });
 
 // Drawing event handlers
 canvas.addEventListener("mousedown", function () {
-   mouseDown(canvas, event);
+  mouseDown(canvas, event);
 });
 canvas.addEventListener("mousemove", function () {
-   mouseMove(canvas, event);
+  mouseMove(canvas, event);
 });
 canvas.addEventListener("mouseup", mouseUp);
 
 function mouseDown(canvas, event) {
-   isMouseDown = true;
-   if (usingEraser) {
-      ctx.lineWidth = 50;
-      ctx.strokeStyle = "white";
-   } else {
-      ctx.lineWidth = currentSize;
-      ctx.strokeStyle = currentColor;
-   }
-   ctx.lineCap = "round";
-   const currentPosition = getMousePos(canvas, event);
-   ctx.moveTo(currentPosition.x, currentPosition.y);
-   ctx.beginPath();
+  isMouseDown = true;
+  if (usingEraser) {
+    ctx.lineWidth = 50;
+    ctx.strokeStyle = "white";
+  } else {
+    ctx.lineWidth = currentSize;
+    ctx.strokeStyle = currentColor;
+  }
+  ctx.lineCap = "round";
+  const currentPosition = getMousePos(canvas, event);
+  ctx.moveTo(currentPosition.x, currentPosition.y);
+  ctx.beginPath();
 }
 
 function mouseMove(canvas, evt) {
-   if (isMouseDown) {
-      const currentPosition = getMousePos(canvas, evt);
-      ctx.lineTo(currentPosition.x, currentPosition.y);
-      ctx.stroke();
-   }
+  if (isMouseDown) {
+    const currentPosition = getMousePos(canvas, evt);
+    ctx.lineTo(currentPosition.x, currentPosition.y);
+    ctx.stroke();
+  }
 }
 
 function mouseUp() {
-   isMouseDown = false;
+  isMouseDown = false;
 }
 
 function getMousePos(canvas, evt) {
-   const rect = canvas.getBoundingClientRect();
-   let offsetX = Number(rect.left);
-   let offsetY = Number(rect.top);
+  const rect = canvas.getBoundingClientRect();
+  let offsetX = Number(rect.left);
+  let offsetY = Number(rect.top);
 
-   return {
-      x: evt.clientX - offsetX,
-      y: evt.clientY - offsetY,
-   };
+  return {
+    x: evt.clientX - offsetX,
+    y: evt.clientY - offsetY,
+  };
 }
