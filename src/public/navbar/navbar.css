@@ -38,10 +38,11 @@
 }
 
 #username-input-button {
-  width: 6vw;
-  padding: 0;
+  min-width: 6vw;
+  padding: 2px;
   margin-left: 0.3vw;
-  height: 34px;
+  overflow: hidden;
+  text-overflow: clip;
 }
 
 .right {
