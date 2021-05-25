@@ -42,14 +42,20 @@ socket.on("canvasClear", () => {
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 });
 
-// Drawing event handlers
-canvas.addEventListener("mousedown", function () {
-  mouseDown(canvas, event);
+socket.on("enableControls", () => {
+  document.getElementsByClassName("draw-sidebar")[0].style.display = "flex";
+
+  // Drawing event handlers
+  canvas.addEventListener("mousedown", function () {
+    mouseDown(canvas, event);
+  });
+  canvas.addEventListener("mousemove", function () {
+    mouseMove(canvas, event);
+  });
+  canvas.addEventListener("mouseup", mouseUp);
+
+  canvas.style.cursor = "crosshair";
 });
-canvas.addEventListener("mousemove", function () {
-  mouseMove(canvas, event);
-});
-canvas.addEventListener("mouseup", mouseUp);
 
 function mouseDown(canvas, evt) {
   isMouseDown = true;
@@ -99,7 +105,6 @@ function mouseMove(canvas, evt) {
 
 socket.on("emitDraw", (data) => {
   currentPosition = data.currentPosition;
-  console.log("EmitDraw:", currentPosition);
   ctx.lineTo(currentPosition.x, currentPosition.y);
   ctx.stroke();
 });
@@ -133,8 +138,6 @@ function getMousePos(canvas, evt) {
     x: ((evt.clientX - offsetX) / offsetWidth) * canvas.width,
     y: ((evt.clientY - offsetY) / offsetHeight) * canvas.height,
   };
-
-  console.log("GetMousePos", position);
 
   return position;
 }

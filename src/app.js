@@ -1,12 +1,16 @@
+const { Console } = require("console");
 const dotenv = require("dotenv");
 const express = require("express");
 const fs = require("fs");
 const http = require("http");
+const gameService = require("./services/game.js");
+
 const dotenvConfig = dotenv.config();
 const app = express();
 const server = http.createServer(app);
 
 const io = require("socket.io")(server);
+
 app.use(express.static("src/public"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -16,12 +20,33 @@ const navbar = fs.readFileSync(__dirname + "/public/navbar/navbar.html");
 const home = fs.readFileSync(__dirname + "/public/home/home.html");
 const footer = fs.readFileSync(__dirname + "/public/footer/footer.html");
 
-let gameCanvas = null;
-
 // Sockets
 io.on("connection", (socket) => {
   console.log("socket connected", socket.id);
-  socket.emit("updateCanvas", { canvas: gameCanvas });
+  console.log("artist:", gameService.artist.exists);
+  if (!gameService.artist.exists && io.of("/").sockets.size >= 2) {
+    gameService.artist.exists = true;
+    io.of("/")
+      .fetchSockets()
+      .then((sockets) => gameService.selectArtist(sockets));
+  }
+
+  socket.on("disconnect", (reason) => {
+    console.log("socket disconnected", socket.id);
+    if(socket.id === gameService.artist.socket.id) {
+      console.log("artist disconnected");
+      gameService.artist.exists = false;
+      if (!gameService.artist.exists && io.of("/").sockets.size >= 2) {
+        gameService.artist.exists = true;
+        io.of("/")
+          .fetchSockets()
+          .then((sockets) => gameService.selectArtist(sockets));
+      }
+    }
+  });
+
+  // update the canvas
+  socket.emit("updateCanvas", { canvas: gameService.canvas });
 
   // when someone submits chat
   socket.on("submitChat", (data) => {
@@ -44,7 +69,7 @@ io.on("connection", (socket) => {
   // when someone stops painting
   socket.on("mouseUp", (data) => {
     // update the server's drawing
-    gameCanvas = data.canvas;
+    gameService.canvas = data.canvas;
   });
 
   // when someone resets the canvas
