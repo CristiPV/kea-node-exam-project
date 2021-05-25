@@ -1,11 +1,13 @@
 // Global variables
-const canvas = document.getElementById("canvas");
-canvas.width = canvas.parentNode.clientWidth;
-canvas.height = canvas.parentNode.clientHeight;
+let canvas = document.getElementById("canvas");
+canvas.width = 1000;
+canvas.height = 1000;
+
 const ctx = canvas.getContext("2d");
 
 let currentColor = document.getElementById("draw-color-picker").value;
 let currentSize = document.getElementById("draw-size-input").value;
+let currentPosition = { x: 0, y: 0 };
 
 let isMouseDown = false;
 let usingEraser = false;
@@ -43,7 +45,7 @@ canvas.addEventListener("mousemove", function () {
 });
 canvas.addEventListener("mouseup", mouseUp);
 
-function mouseDown(canvas, event) {
+function mouseDown(canvas, evt) {
   isMouseDown = true;
   if (usingEraser) {
     ctx.lineWidth = 50;
@@ -53,30 +55,80 @@ function mouseDown(canvas, event) {
     ctx.strokeStyle = currentColor;
   }
   ctx.lineCap = "round";
-  const currentPosition = getMousePos(canvas, event);
+  currentPosition = getMousePos(canvas, evt);
+
+  // emit the context and position to everyone else
+  socket.emit("mouseDown", {
+    contextData: {
+      lineWidth: ctx.lineWidth,
+      strokeStyle: ctx.strokeStyle,
+      lineCap: ctx.lineCap,
+    },
+    currentPosition,
+  });
   ctx.moveTo(currentPosition.x, currentPosition.y);
   ctx.beginPath();
 }
 
+socket.on("updateContext", (data) => {
+  ctx.lineWidth = data.contextData.lineWidth;
+  ctx.strokeStyle = data.contextData.strokeStyle;
+  ctx.lineCap = data.contextData.lineCap;
+  currentPosition = data.currentPosition;
+  ctx.moveTo(currentPosition.x, currentPosition.y);
+  ctx.beginPath();
+});
+
 function mouseMove(canvas, evt) {
   if (isMouseDown) {
-    const currentPosition = getMousePos(canvas, evt);
+    currentPosition = getMousePos(canvas, evt);
+    // emit the current position
+    socket.emit("mouseMove", {
+      currentPosition,
+    });
     ctx.lineTo(currentPosition.x, currentPosition.y);
     ctx.stroke();
   }
 }
 
+socket.on("emitDraw", (data) => {
+  currentPosition = data.currentPosition;
+  console.log("EmitDraw:", currentPosition);
+  ctx.lineTo(currentPosition.x, currentPosition.y);
+  ctx.stroke();
+});
+
 function mouseUp() {
   isMouseDown = false;
+  socket.emit("mouseUp", {
+    canvas: canvas.toDataURL(),
+  });
 }
+
+socket.on("updateCanvas", (data) => {
+  const canvasData = data.canvas;
+  if (canvasData) {
+    let img = new Image();
+    img.onload = function () {
+      ctx.drawImage(img, 0, 0);
+    };
+    img.src = canvasData;
+  }
+});
 
 function getMousePos(canvas, evt) {
   const rect = canvas.getBoundingClientRect();
-  let offsetX = Number(rect.left);
-  let offsetY = Number(rect.top);
+  const offsetX = Number(rect.left);
+  const offsetY = Number(rect.top);
+  const offsetHeight = Number(rect.height);
+  const offsetWidth = Number(rect.width);
 
-  return {
-    x: evt.clientX - offsetX,
-    y: evt.clientY - offsetY,
+  const position = {
+    x: ((evt.clientX - offsetX) / offsetWidth) * canvas.width,
+    y: ((evt.clientY - offsetY) / offsetHeight) * canvas.height,
   };
+
+  console.log("GetMousePos", position);
+
+  return position;
 }
