@@ -32,6 +32,12 @@ document.getElementById("draw-pencil").addEventListener("click", function () {
   usingEraser = false;
 });
 document.getElementById("draw-clear").addEventListener("click", function () {
+  socket.emit("triggerClear");
+  ctx.fillStyle = "white";
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+});
+
+socket.on("canvasClear", () => {
   ctx.fillStyle = "white";
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 });

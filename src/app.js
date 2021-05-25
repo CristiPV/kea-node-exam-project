@@ -46,6 +46,11 @@ io.on("connection", (socket) => {
     // update the server's drawing
     gameCanvas = data.canvas;
   });
+
+  // when someone resets the canvas
+  socket.on("triggerClear", () => {
+    socket.broadcast.emit("canvasClear");
+  });
 });
 
 // Routes
