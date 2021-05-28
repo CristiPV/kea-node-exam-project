@@ -5,6 +5,7 @@ const http = require("http");
 const dotenvConfig = dotenv.config();
 const app = express();
 const server = http.createServer(app);
+const drawingRouter = require("./routes/drawing");
 
 const socketService = require("./services/socket.js");
 const io = socketService.start(server);
@@ -14,9 +15,13 @@ app.use(express.static("src/public"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// API routes
+app.use(drawingRouter.router);
+
 // Files
 const navbar = fs.readFileSync(__dirname + "/public/navbar/navbar.html");
 const home = fs.readFileSync(__dirname + "/public/home/home.html");
+const history = fs.readFileSync(__dirname + "/public/history/history.html");
 const footer = fs.readFileSync(__dirname + "/public/footer/footer.html");
 
 // DB functions
@@ -113,6 +118,9 @@ app.get("/", (req, res) => {
   res.send(navbar + home + footer);
 });
 
+app.get("/history", (req, res) => {
+  res.send(navbar + history + footer);
+})
 // App server setup
 const PORT = process.env.PORT || 3000;
 
