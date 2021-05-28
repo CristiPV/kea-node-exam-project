@@ -15,11 +15,11 @@ function empowerChat() {
 function submitChat() {
   // Retrieve the text from the page
   const chatText = document.getElementById("chat-input").value;
-    // Broadcast the text to be displayed
-    socket.emit("submitChat", { chatText, chatUser });
+  // Broadcast the text to be displayed
+  socket.emit("submitChat", { chatText, chatUser });
 
-    // Clear the input field for next chat
-    document.getElementById("chat-input").value = "";
+  // Clear the input field for next chat
+  document.getElementById("chat-input").value = "";
 }
 
 socket.on("updateChat", (data) => {
@@ -43,4 +43,17 @@ socket.on("updateChat", (data) => {
 
   containerDiv.appendChild(chatDiv);
   containerDiv.scrollTop = containerDiv.scrollHeight;
+});
+
+socket.on("sendTopic", (data) => {
+  document.getElementsByClassName("draw-topic-text")[0].innerText =
+    data.topic + '"';
+});
+
+socket.on("showToast", (data) => {
+  showToast(data.title, data.message, data.type);
+});
+
+socket.on("gameEnd", () => {
+  socket.emit("requestRestart");
 });

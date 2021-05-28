@@ -1,6 +1,6 @@
 <div class="forum-container">
   <div class="box draw-container col-6">
-    <div class="draw-sidebar">
+    <div class="draw-sidebar" style="display: none;">
       <div class="draw-color">
         <h4>Color</h4>
         <div class="draw-color-input">
@@ -41,6 +41,11 @@
           id="draw-size-input"
         />
       </div>
+
+      <div class="draw-topic fw-bold">
+        <span>Draw: "</span>
+        <span class="draw-topic-text"></span>
+      </div>
     </div>
     <div class="draw-canvas">
       <canvas id="canvas"></canvas>
@@ -58,7 +63,13 @@
   </div>
 </div>
 
+ <!-- JQuery -->
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 
+ <!-- Toastr Scripts -->
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+ 
 <script src="/socket.io/socket.io.js"></script>
+<script src="/toastr/toastr.js"></script>
 <script src="/home/sockets.js"></script>
 <script src="/home/home.js"></script>
