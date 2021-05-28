@@ -1,5 +1,5 @@
 const io = require("./socket.js").get();
-const pool = require("../mysql/mysql.js").pool;
+const pool = require("./mysql.js").pool;
 
 let canvas = null;
 const getCanvas = () => {
@@ -14,23 +14,24 @@ let running = false;
 let endTimer = null;
 let topics;
 
-function loadTopics()
-{
+function loadTopics() {
   pool.query("SELECT * FROM draw_option", (error, result) => {
     if (error) throw error;
 
     result = JSON.parse(JSON.stringify(result));
     topics = result;
-  })
+  });
 }
 
 function sleep(ms) {
   let cancelSleep;
   const promise = new Promise((resolve) => {
     const timeout = setTimeout(resolve, ms);
-    cancelSleep = () =>{ clearTimeout(timeout); };
+    cancelSleep = () => {
+      clearTimeout(timeout);
+    };
   });
-  return {promise, cancelSleep};
+  return { promise, cancelSleep };
 }
 
 function selectRandomItem(list) {
