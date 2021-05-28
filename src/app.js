@@ -1,15 +1,15 @@
-const { Console } = require("console");
 const dotenv = require("dotenv");
 const express = require("express");
 const fs = require("fs");
 const http = require("http");
-const gameService = require("./services/game.js");
 
 const dotenvConfig = dotenv.config();
 const app = express();
 const server = http.createServer(app);
 
-const io = require("socket.io")(server);
+const socketService = require("./services/socket.js");
+const io = socketService.start(server);
+const gameService = require("./services/game.js");
 
 app.use(express.static("src/public"));
 app.use(express.json());
