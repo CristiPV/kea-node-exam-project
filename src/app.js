@@ -2,11 +2,10 @@ const dotenv = require("dotenv");
 const express = require("express");
 const fs = require("fs");
 const http = require("http");
-const { pool } = require("./mysql/mysql.js");
+const mysql = require("./mysql/mysql.js");
 const dotenvConfig = dotenv.config();
 const app = express();
 const server = http.createServer(app);
-
 const io = require("socket.io")(server);
 app.use(express.static("src/public"));
 app.use(express.json());
@@ -23,18 +22,6 @@ const footer = fs.readFileSync(
 
 // DB query
 
-/* Ideally i only return an array of items from the DB instead of querying it here
-pool.query("SELECT * FROM draw_option", (error, result, fields) => {
-  if (error) {
-    console.log("query failed.");
-    throw error;
-  }
-
-  console.log("result:", result);
-  drawOptions = result;
-  console.log("fields:", fields);
-});
-*/
 // Sockets
 io.on("connection", (socket) => {
   console.log("socket connected", socket.id);

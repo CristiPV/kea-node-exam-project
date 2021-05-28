@@ -1,11 +1,19 @@
 -- -----------------------------------------------------
+-- This is the fix for connection issues.
+-- -----------------------------------------------------
+
+-- ALTER USER 'USERNAMEHERE'@'%' IDENTIFIED WITH mysql_native_password BY 'PASSWORDHERE';
+-- This must be done before the app tries to use the user to connect.
+-- Its a permanent change to the user so its only done once.
+
+-- -----------------------------------------------------
 -- Schema mydb
 -- -----------------------------------------------------
 CREATE SCHEMA IF NOT EXISTS `drawtastic` DEFAULT CHARACTER SET utf8 ;
 USE drawtastic ;
 
 -- -----------------------------------------------------
--- Table mydb.draw_option
+-- Table drawtastic.draw_option
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `drawtastic`.`draw_option` (
   `id` INT NOT NULL AUTO_INCREMENT,
@@ -17,7 +25,7 @@ DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_bin;
 
 -- -----------------------------------------------------
--- Table mydb.drawing
+-- Table drawtastic.drawing
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `drawtastic`.`drawing` (
   `id` INT NOT NULL AUTO_INCREMENT,
@@ -38,3 +46,10 @@ DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_bin;
 
 
+-- -----------------------------------------------------
+-- Population drawtastic.draw_option
+-- -----------------------------------------------------
+insert into draw_option VALUES (DEFAULT, "car");
+insert into draw_option VALUES (DEFAULT, "house");
+insert into draw_option VALUES (DEFAULT, "tomato");
+insert into draw_option VALUES (DEFAULT, "person");
