@@ -3,17 +3,23 @@ const io = require("./socket.js").get();
 let canvas = null;
 const getCanvas = () => {
   return canvas;
-}
+};
 let artist = { exists: false, socket: null };
 let currentTopic = "";
 const getTopic = () => {
   return currentTopic;
 };
 let running = false;
+let endTimer = null;
 const topics = ["house", "tomato", "car", "human"];
 
 function sleep(ms) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
+  let cancelSleep;
+  const promise = new Promise((resolve) => {
+    const timeout = setTimeout(resolve, ms);
+    cancelSleep = () =>{ clearTimeout(timeout); };
+  });
+  return {promise, cancelSleep};
 }
 
 function selectRandomItem(list) {
@@ -64,7 +70,8 @@ function resetGame() {
   artist.exists = false;
   currentTopic = "";
   io.emit("canvasClear");
-  sleep(10000).then(() => {
+  const timeout = sleep(10000);
+  timeout.promise.then(() => {
     io.emit("gameEnd");
   });
 }
@@ -80,7 +87,12 @@ function guessTopic(socket) {
     message: "Somebody won the game",
     type: "success",
   });
+  if (endTimer) {
+    console.log("Topic has been guessed - cancelling the timer");
+    endTimer.cancelSleep();
+  }
   if (running) {
+    console.log("Topic has been guessed - restarting game");
     resetGame();
   }
 }
@@ -93,16 +105,24 @@ async function start() {
     message: "Game will start in 5 seconds !",
     type: "success",
   });
-  sleep(5000).then(() => {
+  const startTimer = sleep(5000);
+  startTimer.promise.then(() => {
     if (!running) {
       beginGame();
     }
   });
-  // sleep(60000).then(() => {
-  //   if (running) {
-  //     resetGame();
-  //   }
-  // });
+  endTimer = sleep(120000);
+  endTimer.promise.then(() => {
+    if (running) {
+      console.log("Artist ran out of time - restarting game");
+      io.emit("showToast", {
+        title: "Game ended",
+        message: "Nobody guessed in time",
+        type: "success",
+      });
+      resetGame();
+    }
+  });
 }
 
 module.exports = {
