@@ -13,7 +13,16 @@ function get() {
   }
 }
 
+function emitShowToast( source, title, message, type ) {
+  source.emit("showToast", {
+    title: title,
+    message: message,
+    type: type,
+  });
+}
+
 module.exports = {
   start,
   get,
+  emitShowToast
 };

@@ -24,34 +24,33 @@ gameService.loadTopics();
 
 // Sockets
 io.on("connection", (socket) => {
-  console.log("Artist exists:", gameService.artist.exists);
+  console.log("Artist exists:", gameService.getArtist().exists);
   console.log("Socket connected", socket.id);
   // If there is no artist and we have at least 2 players, then select an artist and start the game
-  if (!gameService.artist.exists && io.of("/").sockets.size >= 2) {
+  if (!gameService.getArtist().exists && io.of("/").sockets.size >= 2) {
     io.of("/")
       .fetchSockets()
-      .then((sockets) => gameService.selectArtist(sockets))
-      .then(gameService.start);
+      .then((sockets) => gameService.getRandomArtist(sockets))
+      .then(gameService.startGame);
   }
 
   socket.on("disconnect", (reason) => {
     console.log("Socket disconnected", socket.id);
-    // If the artist disconnects then choose a new artist and resume ( subject to change )
+    
     if (io.of("/").sockets.size <= 1) {
       console.log("Game will reset due to not enough players");
-      gameService.resetGame();
+      gameService.stopGame();
       io.emit("showToast", {
         title: "Game will reset.",
         message: "Not enough players.",
         type: "info",
       });
     } else if (
-      gameService.artist.exists &&
-      socket.id === gameService.artist.socket.id
+      gameService.getArtist().exists &&
+      socket.id === gameService.getArtist().socket.id
     ) {
       console.log("Artist disconnected");
-      gameService.artist.exists = false;
-      gameService.resetGame();
+      gameService.stopGame();
       io.emit("showToast", {
         title: "Game will reset",
         message: "Artist disconnected",
@@ -61,11 +60,11 @@ io.on("connection", (socket) => {
   });
 
   socket.on("requestRestart", () => {
-    if (!gameService.artist.exists && io.of("/").sockets.size >= 2) {
+    if (!gameService.getArtist().exists && io.of("/").sockets.size >= 2) {
       io.of("/")
         .fetchSockets()
-        .then((sockets) => gameService.selectArtist(sockets))
-        .then(gameService.start);
+        .then((sockets) => gameService.getRandomArtist(sockets))
+        .then(gameService.startGame);
     }
   });
 
@@ -76,9 +75,9 @@ io.on("connection", (socket) => {
   socket.on("submitChat", (data) => {
     // Update everyone's chat
     if (data.chatText === gameService.getTopic().name) {
-      if (gameService.artist.exists && socket != gameService.artist.socket) {
+      if (gameService.getArtist().exists && socket != gameService.getArtist().socket) {
         console.log("Topic guessed by:", socket.id);
-        gameService.guessTopic(socket);
+        gameService.resetOnWin(socket);
       }
     }
     io.emit("updateChat", data);
