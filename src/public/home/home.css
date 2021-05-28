@@ -97,6 +97,13 @@
   align-items: center;
 }
 
+.draw-topic {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
 .draw-tools {
   display: flex;
   flex-direction: column;

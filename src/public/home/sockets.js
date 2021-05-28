@@ -44,3 +44,16 @@ socket.on("updateChat", (data) => {
   containerDiv.appendChild(chatDiv);
   containerDiv.scrollTop = containerDiv.scrollHeight;
 });
+
+socket.on("sendTopic", (data) => {
+  document.getElementsByClassName("draw-topic-text")[0].innerText =
+    data.topic + '"';
+});
+
+socket.on("showToast", (data) => {
+  showToast(data.title, data.message, data.type);
+});
+
+socket.on("gameEnd", () => {
+  socket.emit("requestRestart");
+});

@@ -22,35 +22,63 @@ const footer = fs.readFileSync(__dirname + "/public/footer/footer.html");
 
 // Sockets
 io.on("connection", (socket) => {
-  console.log("socket connected", socket.id);
-  console.log("artist:", gameService.artist.exists);
+  console.log("Artist exists:", gameService.artist.exists);
+  console.log("Socket connected", socket.id);
+  // If there is no artist and we have at least 2 players, then select an artist and start the game
   if (!gameService.artist.exists && io.of("/").sockets.size >= 2) {
-    gameService.artist.exists = true;
     io.of("/")
       .fetchSockets()
-      .then((sockets) => gameService.selectArtist(sockets));
+      .then((sockets) => gameService.selectArtist(sockets))
+      .then(gameService.start);
   }
 
   socket.on("disconnect", (reason) => {
-    console.log("socket disconnected", socket.id);
-    if(socket.id === gameService.artist.socket.id) {
-      console.log("artist disconnected");
+    console.log("Socket disconnected", socket.id);
+    // If the artist disconnects then choose a new artist and resume ( subject to change )
+    if (io.of("/").sockets.size <= 1) {
+      console.log("Game will reset due to not enough players");
+      gameService.resetGame();
+      io.emit("showToast", {
+        title: "Game will reset.",
+        message: "Not enough players.",
+        type: "info",
+      });
+    } else if (
+      gameService.artist.exists &&
+      socket.id === gameService.artist.socket.id
+    ) {
+      console.log("Artist disconnected");
       gameService.artist.exists = false;
-      if (!gameService.artist.exists && io.of("/").sockets.size >= 2) {
-        gameService.artist.exists = true;
-        io.of("/")
-          .fetchSockets()
-          .then((sockets) => gameService.selectArtist(sockets));
-      }
+      gameService.resetGame();
+      io.emit("showToast", {
+        title: "Game will reset",
+        message: "Artist disconnected",
+        type: "info",
+      });
+    }
+  });
+
+  socket.on("requestRestart", () => {
+    if (!gameService.artist.exists && io.of("/").sockets.size >= 2) {
+      io.of("/")
+        .fetchSockets()
+        .then((sockets) => gameService.selectArtist(sockets))
+        .then(gameService.start);
     }
   });
 
   // update the canvas
-  socket.emit("updateCanvas", { canvas: gameService.canvas });
+  socket.emit("updateCanvas", { canvas: gameService.getCanvas() });
 
   // when someone submits chat
   socket.on("submitChat", (data) => {
     // Update everyone's chat
+    if (data.chatText === gameService.getTopic()) {
+      if (gameService.artist.exists && socket != gameService.artist.socket) {
+        console.log("Topic guessed by:", socket.id);
+        gameService.guessTopic(socket);
+      }
+    }
     io.emit("updateChat", data);
   });
 

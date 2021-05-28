@@ -46,16 +46,29 @@ socket.on("enableControls", () => {
   document.getElementsByClassName("draw-sidebar")[0].style.display = "flex";
 
   // Drawing event handlers
-  canvas.addEventListener("mousedown", function () {
-    mouseDown(canvas, event);
-  });
-  canvas.addEventListener("mousemove", function () {
-    mouseMove(canvas, event);
-  });
+  canvas.addEventListener("mousedown", mouseDownHandler);
+  canvas.addEventListener("mousemove", mouseMoveHandler);
   canvas.addEventListener("mouseup", mouseUp);
 
   canvas.style.cursor = "crosshair";
 });
+
+socket.on("disableControls", () => {
+  document.getElementsByClassName("draw-sidebar")[0].style.display = "none";
+
+  ctx.closePath();
+  isMouseDown = false;
+
+  // Drawing event handlers
+  canvas.removeEventListener("mousedown", mouseDownHandler);
+  canvas.removeEventListener("mousemove", mouseMoveHandler);
+  canvas.removeEventListener("mouseup", mouseUp);
+  canvas.style.cursor = "default";
+});
+
+function mouseDownHandler() {
+  mouseDown(canvas, event);
+}
 
 function mouseDown(canvas, evt) {
   isMouseDown = true;
@@ -90,6 +103,10 @@ socket.on("updateContext", (data) => {
   ctx.moveTo(currentPosition.x, currentPosition.y);
   ctx.beginPath();
 });
+
+function mouseMoveHandler() {
+  mouseMove(canvas, event);
+}
 
 function mouseMove(canvas, evt) {
   if (isMouseDown) {
