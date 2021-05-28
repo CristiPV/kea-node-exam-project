@@ -1,5 +1,5 @@
 const io = require("./socket.js").get();
-const mysql = require("../mysql/mysql.js");
+const pool = require("../mysql/mysql.js").pool;
 
 let canvas = null;
 const getCanvas = () => {
@@ -16,7 +16,7 @@ let topics;
 
 function loadTopics()
 {
-  mysql.pool.query("SELECT * FROM draw_option", (error, result) => {
+  pool.query("SELECT * FROM draw_option", (error, result) => {
     if (error) throw error;
 
     result = JSON.parse(JSON.stringify(result));
