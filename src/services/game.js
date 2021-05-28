@@ -1,4 +1,5 @@
 const io = require("./socket.js").get();
+const mysql = require("../mysql/mysql.js");
 
 let canvas = null;
 const getCanvas = () => {
@@ -11,7 +12,17 @@ const getTopic = () => {
 };
 let running = false;
 let endTimer = null;
-const topics = ["house", "tomato", "car", "human"];
+let topics;
+
+function loadTopics()
+{
+  mysql.pool.query("SELECT * FROM draw_option", (error, result) => {
+    if (error) throw error;
+
+    result = JSON.parse(JSON.stringify(result));
+    topics = result;
+  })
+}
 
 function sleep(ms) {
   let cancelSleep;
@@ -52,11 +63,11 @@ function beginGame() {
   console.log("A new game has begun");
   io.emit("canvasClear");
   artist.socket.emit("showToast", {
-    title: currentTopic,
-    message: "Draw the " + currentTopic,
+    title: currentTopic.name,
+    message: "Draw the " + currentTopic.name,
     type: "info",
   });
-  artist.socket.emit("sendTopic", { topic: currentTopic });
+  artist.socket.emit("sendTopic", { topic: currentTopic.name });
   artist.socket.emit("enableControls");
 }
 
@@ -68,7 +79,7 @@ function resetGame() {
   }
   artist.socket = null;
   artist.exists = false;
-  currentTopic = "";
+  currentTopic = null;
   io.emit("canvasClear");
   const timeout = sleep(10000);
   timeout.promise.then(() => {
@@ -134,4 +145,5 @@ module.exports = {
   resetGame,
   getTopic,
   getCanvas,
+  loadTopics,
 };

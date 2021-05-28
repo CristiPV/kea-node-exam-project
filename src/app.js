@@ -2,7 +2,6 @@ const dotenv = require("dotenv");
 const express = require("express");
 const fs = require("fs");
 const http = require("http");
-const mysql = require("./mysql/mysql.js");
 const dotenvConfig = dotenv.config();
 const app = express();
 const server = http.createServer(app);
@@ -20,7 +19,8 @@ const navbar = fs.readFileSync(__dirname + "/public/navbar/navbar.html");
 const home = fs.readFileSync(__dirname + "/public/home/home.html");
 const footer = fs.readFileSync(__dirname + "/public/footer/footer.html");
 
-// DB query
+// DB functions
+gameService.loadTopics();
 
 // Sockets
 io.on("connection", (socket) => {
@@ -75,7 +75,7 @@ io.on("connection", (socket) => {
   // when someone submits chat
   socket.on("submitChat", (data) => {
     // Update everyone's chat
-    if (data.chatText === gameService.getTopic()) {
+    if (data.chatText === gameService.getTopic().name) {
       if (gameService.artist.exists && socket != gameService.artist.socket) {
         console.log("Topic guessed by:", socket.id);
         gameService.guessTopic(socket);
