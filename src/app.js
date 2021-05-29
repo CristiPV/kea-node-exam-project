@@ -24,8 +24,18 @@ gameService.loadTopics();
 
 // Sockets
 io.on("connection", (socket) => {
-  console.log("Artist exists:", gameService.getArtist().exists);
-  console.log("Socket connected", socket.id);
+  console.log(
+    "\x1b[31m%s\x1b[0m",
+    "App:\n",
+    "* Socket connected:",
+    socket.id,
+    "\n * Artist exists:",
+    gameService.getArtist().exists
+  );
+
+  // Sends the current canvas
+  socket.emit("updateCanvas", { canvas: gameService.getCanvas() });
+
   // If there is no artist and we have at least 2 players, then select an artist and start the game
   if (!gameService.getArtist().exists && io.of("/").sockets.size >= 2) {
     io.of("/")
@@ -35,30 +45,50 @@ io.on("connection", (socket) => {
   }
 
   socket.on("disconnect", (reason) => {
-    console.log("Socket disconnected", socket.id);
+    console.log(
+      "\x1b[31m%s\x1b[0m",
+      "App:\n",
+      "* Socket disconnected:",
+      socket.id
+    );
 
     if (io.of("/").sockets.size <= 1) {
-      console.log("Game will reset due to not enough players");
+      // If there is only one player left
+      console.log(
+        "\x1b[31m%s\x1b[0m",
+        "App:\n",
+        "* Game will end - not enough players"
+      );
+
       gameService.stopGame();
-      io.emit("showToast", {
-        title: "Game will reset.",
-        message: "Not enough players.",
-        type: "info",
-      });
+      socketService.emitShowToast(
+        io,
+        "Game will end.",
+        "Not enough players.",
+        "info"
+      );
     } else if (
       gameService.getArtist().exists &&
       socket.id === gameService.getArtist().socket.id
     ) {
-      console.log("Artist disconnected");
+      // If the artist player disconnects
+      console.log(
+        "\x1b[31m%s\x1b[0m",
+        "App:\n",
+        "* Game will end - artist disconnected"
+      );
+
       gameService.stopGame();
-      io.emit("showToast", {
-        title: "Game will reset",
-        message: "Artist disconnected",
-        type: "info",
-      });
+      socketService.emitShowToast(
+        io,
+        "Game will end.",
+        "Artist disconnected.",
+        "info"
+      );
     }
   });
 
+  // Restarts the game if the start conditions are met
   socket.on("requestRestart", () => {
     if (!gameService.getArtist().exists && io.of("/").sockets.size >= 2) {
       io.of("/")
@@ -68,12 +98,9 @@ io.on("connection", (socket) => {
     }
   });
 
-  // update the canvas
-  socket.emit("updateCanvas", { canvas: gameService.getCanvas() });
-
-  // when someone submits chat
+  // When someone submits chat
   socket.on("submitChat", (data) => {
-    // Update everyone's chat
+    // Check if a player that is not the artist has guessed the topic ( if there is a topic )
     if (
       gameService.getTopic() &&
       data.chatText === gameService.getTopic().name
@@ -86,29 +113,31 @@ io.on("connection", (socket) => {
         gameService.resetOnWin(socket);
       }
     }
+    // Update everyone's chat
     io.emit("updateChat", data);
   });
 
-  // when someone starts painting
+  // When someone starts drawing
   socket.on("mouseDown", (data) => {
-    // update everyone's context to match the painter's
+    // Update everyone's context to match the artist's
     socket.broadcast.emit("updateContext", data);
   });
 
-  // when someone moves the mouse
+  // When the artist moves the mouse
   socket.on("mouseMove", (data) => {
-    // draw on everyone's canvas
+    // Draw on everyone's canvas
     socket.broadcast.emit("updateDrawing", data);
   });
 
-  // when someone stops painting
+  // When the artist stops painting
   socket.on("mouseUp", (data) => {
-    // update the server's drawing
+    // Update the server's canvas
     gameService.setCanvas(data.canvas);
   });
 
-  // when someone resets the canvas
+  // When the artist resets the canvas
   socket.on("requestCanvasClear", () => {
+    // Clears the canvas for everyone else
     socket.broadcast.emit("canvasClear");
   });
 });
