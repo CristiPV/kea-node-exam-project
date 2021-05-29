@@ -18,9 +18,11 @@ async function getHistory() {
   const fetchValues = await fetch("/api/drawings");
   data = await fetchValues.json();
 
+  // Div of the history.html page
   const informationDiv = document.getElementById("information");
-  //console.log(data.drawings[0].artist);
+  const imageDiv = document.getElementById("image");
 
+  // Text Information
   data.drawings.map((drawingData) => {
     const informationText = document.createElement("div");
 
@@ -47,5 +49,14 @@ async function getHistory() {
 
     informationDiv.appendChild(informationText);
   });
+  
+  // Image Data WIP
+  data.drawings.map((x) => {
+    const imageInformation = document.createElement("div");
+
+    const image = document.createElement("img");
+
+    imageDiv.appendChild(imageInformation);
+  })
 }
 getHistory();
