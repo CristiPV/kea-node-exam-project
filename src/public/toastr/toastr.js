@@ -1,3 +1,4 @@
+// Toastr Notification Properties
 const toastrDefaults = {
   closeButton: true,
   debug: false,
@@ -16,6 +17,12 @@ const toastrDefaults = {
   hideMethod: "fadeOut",
 };
 
+/**
+ * showToast - displays a Toastr notification on the screen.
+ * @param {String} title 
+ * @param {String} message 
+ * @param {String} type 
+ */
 function showToast(title, message, type) {
   toastr.options = toastrDefaults;
 

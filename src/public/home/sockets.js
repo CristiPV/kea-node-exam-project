@@ -2,6 +2,9 @@ const socket = io();
 
 let chatUser = "PlaceholderName";
 
+/**
+ * empowerChat - enables the usage of the chat for the player.
+ */
 function empowerChat() {
   const chatButtonToEmpower = document.getElementById("chat-button");
   const chatToEmpower = document.getElementById("chat-input");
@@ -12,16 +15,24 @@ function empowerChat() {
   chatToEmpower.removeAttribute("disabled");
 }
 
+/**
+ * submitChat - sends a chat message, along with the name of the player who sent it
+ * to the server.
+ */
 function submitChat() {
-  // Retrieve the text from the page
+  // Retrieve the chat text from the input
   const chatText = document.getElementById("chat-input").value;
-  // Broadcast the text to be displayed
-  socket.emit("submitChat", { chatText, chatUser });
 
-  // Clear the input field for next chat
+  // Clear the input field for the next message
   document.getElementById("chat-input").value = "";
+
+  // Emit the text and user to the server
+  socket.emit("submitChat", { chatText, chatUser });
 }
 
+/**
+ * updateChat - updates the chat with the message received from the server.
+ */
 socket.on("updateChat", (data) => {
   const containerDiv = document.getElementsByClassName(
     "chat-text-container"
@@ -45,15 +56,25 @@ socket.on("updateChat", (data) => {
   containerDiv.scrollTop = containerDiv.scrollHeight;
 });
 
-socket.on("sendTopic", (data) => {
+/**
+ * updateTopic - updates the topic that the artist is supposed to draw with the one 
+ * received from the server.
+ */
+socket.on("updateTopic", (data) => {
   document.getElementsByClassName("draw-topic-text")[0].innerText =
-    data.topic + '"';
+    '"' + data.topic + '"';
 });
 
+/**
+ * showToast - displays a Toastr notification with the data received from the server.
+ */
 socket.on("showToast", (data) => {
   showToast(data.title, data.message, data.type);
 });
 
+/**
+ * gameEnd - requests the start of a new game once the current one has ended. 
+ */
 socket.on("gameEnd", () => {
   socket.emit("requestRestart");
 });
