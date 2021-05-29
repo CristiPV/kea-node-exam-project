@@ -74,8 +74,14 @@ io.on("connection", (socket) => {
   // when someone submits chat
   socket.on("submitChat", (data) => {
     // Update everyone's chat
-    if (data.chatText === gameService.getTopic().name) {
-      if (gameService.getArtist().exists && socket != gameService.getArtist().socket) {
+    if (
+      gameService.getTopic() &&
+      data.chatText === gameService.getTopic().name
+    ) {
+      if (
+        gameService.getArtist().exists &&
+        socket != gameService.getArtist().socket
+      ) {
         console.log("Topic guessed by:", socket.id);
         gameService.resetOnWin(socket);
       }
