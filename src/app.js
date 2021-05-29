@@ -98,7 +98,7 @@ io.on("connection", (socket) => {
   // when someone moves the mouse
   socket.on("mouseMove", (data) => {
     // draw on everyone's canvas
-    socket.broadcast.emit("emitDraw", data);
+    socket.broadcast.emit("updateDrawing", data);
   });
 
   // when someone stops painting
@@ -108,7 +108,7 @@ io.on("connection", (socket) => {
   });
 
   // when someone resets the canvas
-  socket.on("triggerClear", () => {
+  socket.on("requestCanvasClear", () => {
     socket.broadcast.emit("canvasClear");
   });
 });

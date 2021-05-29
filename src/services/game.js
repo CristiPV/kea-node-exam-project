@@ -104,7 +104,7 @@ function setupGame() {
   io.emit("canvasClear");
 
   // Sets up the artist socket
-  artist.socket.emit("sendTopic", { topic: currentTopic.name });
+  artist.socket.emit("updateTopic", { topic: currentTopic.name });
   artist.socket.emit("enableControls");
   socketService.emitShowToast(
     artist.socket,
