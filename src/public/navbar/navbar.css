@@ -37,16 +37,16 @@
   width: 30%;
 }
 
+.right {
+  display: flex;
+  justify-content: flex-end;
+  width: 30%;
+}
+
 #username-input-button {
   min-width: 6vw;
   padding: 2px;
   margin-left: 0.3vw;
   overflow: hidden;
   text-overflow: clip;
-}
-
-.right {
-  display: flex;
-  justify-content: flex-end;
-  width: 30%;
 }
