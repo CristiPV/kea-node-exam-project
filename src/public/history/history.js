@@ -1,6 +1,3 @@
-
-
-
 /*
 id	1
 artist	"yo"
@@ -28,7 +25,7 @@ async function getHistory() {
 
     const artistName = document.createElement("p");
     artistName.classList.add("drawingInformation");
-    artistName.innerText = "artist : " +drawingData.artist;
+    artistName.innerText = "artist : " + drawingData.artist;
 
     const winnerName = document.createElement("p");
     winnerName.classList.add("drawingInformation");
@@ -49,14 +46,15 @@ async function getHistory() {
 
     informationDiv.appendChild(informationText);
   });
-  
+
   // Image Data WIP
   data.drawings.map((x) => {
     const imageInformation = document.createElement("div");
-
+    console.log(x);
     const image = document.createElement("img");
-
+    image.src = x.image;
+    imageInformation.appendChild(image);
     imageDiv.appendChild(imageInformation);
-  })
+  });
 }
 getHistory();

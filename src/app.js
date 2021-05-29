@@ -37,7 +37,8 @@ io.on("connection", (socket) => {
     "\n * Artist exists:",
     gameService.getArtist().exists
   );
-
+  // Assign username
+  socket.username = "PlaceholderName";
   // Sends the current canvas
   socket.emit("updateCanvas", { canvas: gameService.getCanvas() });
 
@@ -93,6 +94,10 @@ io.on("connection", (socket) => {
     }
   });
 
+  socket.on("sendUsername", (data) => {
+    socket.username = data.username;
+  });
+
   // Restarts the game if the start conditions are met
   socket.on("requestRestart", () => {
     if (!gameService.getArtist().exists && io.of("/").sockets.size >= 2) {
@@ -114,7 +119,12 @@ io.on("connection", (socket) => {
         gameService.getArtist().exists &&
         socket != gameService.getArtist().socket
       ) {
-        console.log("Topic guessed by:", socket.id);
+        console.log(
+          "\x1b[31m%s\x1b[0m",
+          "App:\n",
+          "* Topic guessed by:",
+          socket.id
+        );
         gameService.resetOnWin(socket);
       }
     }
@@ -154,7 +164,7 @@ app.get("/", (req, res) => {
 
 app.get("/history", (req, res) => {
   res.send(navbar + history + footer);
-})
+});
 // App server setup
 const PORT = process.env.PORT || 3000;
 

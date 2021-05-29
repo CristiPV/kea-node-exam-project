@@ -1,5 +1,6 @@
 const socketService = require("./socket.js");
 const pool = require("./mysql.js").pool;
+const historyService = require("./history");
 
 const io = socketService.get();
 
@@ -28,9 +29,9 @@ const getArtist = () => {
 };
 
 // Setters
-const setCanvas = ( newCanvas ) => {
+const setCanvas = (newCanvas) => {
   canvas = newCanvas;
-}
+};
 
 /**
  * loadTopics - Loads the topics list with the entries from the database.
@@ -88,7 +89,11 @@ function getRandomArtist(players) {
  * for the artist and emits the relevant toastr events.
  */
 function setupGame() {
-  console.log("\x1b[31m%s\x1b[0m\x1b[33m%s\x1b[0m", "setupGame:\n", "-- Started --");
+  console.log(
+    "\x1b[31m%s\x1b[0m\x1b[33m%s\x1b[0m",
+    "setupGame:\n",
+    "-- Started --"
+  );
   running = true;
 
   // Assign the current topic
@@ -112,7 +117,11 @@ function setupGame() {
     "Draw the " + currentTopic.name,
     "info"
   );
-  console.log("\x1b[31m%s\x1b[0m\x1b[33m%s\x1b[0m", "setupGame:\n", "-- Completed --");
+  console.log(
+    "\x1b[31m%s\x1b[0m\x1b[33m%s\x1b[0m",
+    "setupGame:\n",
+    "-- Completed --"
+  );
 }
 
 /**
@@ -120,9 +129,12 @@ function setupGame() {
  * a gameEnd event to all connected sockets.
  */
 function resetGame() {
-  console.log("\x1b[31m%s\x1b[0m\x1b[33m%s\x1b[0m", "resetGame:\n", "-- Started --");
+  console.log(
+    "\x1b[31m%s\x1b[0m\x1b[33m%s\x1b[0m",
+    "resetGame:\n",
+    "-- Started --"
+  );
   running = false;
-
   // Clears everyone's canvas
   io.emit("canvasClear");
 
@@ -146,7 +158,11 @@ function resetGame() {
   const timeout = sleep(endGameTimeout);
   timeout.promise.then(() => {
     io.emit("gameEnd");
-    console.log("\x1b[31m%s\x1b[0m\x1b[33m%s\x1b[0m", "resetGame:\n", "-- Completed --");
+    console.log(
+      "\x1b[31m%s\x1b[0m\x1b[33m%s\x1b[0m",
+      "resetGame:\n",
+      "-- Completed --"
+    );
   });
 }
 
@@ -156,6 +172,14 @@ function resetGame() {
  * @param {Socket} socket - the socket of the player that won the game.
  */
 function resetOnWin(socket) {
+  // Upload game to DB
+  historyService.saveGameInfo(
+    canvas,
+    currentTopic,
+    socket.username,
+    artist.socket.username
+  );
+
   // Emit toastr events
   socketService.emitShowToast(
     socket,

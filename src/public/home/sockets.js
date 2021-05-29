@@ -10,7 +10,8 @@ function empowerChat() {
   const chatToEmpower = document.getElementById("chat-input");
 
   chatUser = document.getElementById("username-input").value;
-
+  socket.emit("sendUsername", { username: chatUser });
+  
   chatButtonToEmpower.removeAttribute("disabled");
   chatToEmpower.removeAttribute("disabled");
 }
@@ -57,7 +58,7 @@ socket.on("updateChat", (data) => {
 });
 
 /**
- * updateTopic - updates the topic that the artist is supposed to draw with the one 
+ * updateTopic - updates the topic that the artist is supposed to draw with the one
  * received from the server.
  */
 socket.on("updateTopic", (data) => {
@@ -73,7 +74,7 @@ socket.on("showToast", (data) => {
 });
 
 /**
- * gameEnd - requests the start of a new game once the current one has ended. 
+ * gameEnd - requests the start of a new game once the current one has ended.
  */
 socket.on("gameEnd", () => {
   socket.emit("requestRestart");
