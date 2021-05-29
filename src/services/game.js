@@ -27,6 +27,11 @@ const getArtist = () => {
   return artist;
 };
 
+// Setters
+const setCanvas = ( newCanvas ) => {
+  canvas = newCanvas;
+}
+
 /**
  * loadTopics - Loads the topics list with the entries from the database.
  */
@@ -271,6 +276,7 @@ function sleep(ms) {
 }
 
 module.exports = {
+  setCanvas,
   getCanvas,
   getTopic,
   getArtist,

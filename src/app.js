@@ -36,7 +36,7 @@ io.on("connection", (socket) => {
 
   socket.on("disconnect", (reason) => {
     console.log("Socket disconnected", socket.id);
-    
+
     if (io.of("/").sockets.size <= 1) {
       console.log("Game will reset due to not enough players");
       gameService.stopGame();
@@ -104,7 +104,7 @@ io.on("connection", (socket) => {
   // when someone stops painting
   socket.on("mouseUp", (data) => {
     // update the server's drawing
-    gameService.canvas = data.canvas;
+    gameService.setCanvas(data.canvas);
   });
 
   // when someone resets the canvas
