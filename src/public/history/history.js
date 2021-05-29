@@ -1,60 +1,78 @@
-/*
-id	1
-artist	"yo"
-winner	"listen"
-time	"2021-01-01T22:59:59.000Z"
-image	
-type	"Buffer"
-    data	
-    0	117
-    1	112
-draw_option_id	2
-*/
+//dateformat(drawingData.time, 'dddd, mmmm, dS, yyyy, h:MM:ss TT')
+
+function formatDate(date) {
+  let unformattedDate = new Date(date);
+  let formattedDate =
+    unformattedDate.getDate() +
+    "-" +
+    (unformattedDate.getMonth() + 1) +
+    "-" +
+    unformattedDate.getFullYear() +
+    " " +
+    unformattedDate.getHours() +
+    ":" +
+    unformattedDate.getMinutes();
+  return formattedDate;
+}
+
 async function getHistory() {
   let data;
   const fetchValues = await fetch("/api/drawings");
   data = await fetchValues.json();
 
   // Div of the history.html page
-  const informationDiv = document.getElementById("information");
-  const imageDiv = document.getElementById("image");
+  const imageHistory = document.getElementById("image-history");
 
-  // Text Information
   data.drawings.map((drawingData) => {
-    const informationText = document.createElement("div");
+    // Formatting date
+    formattedDate = formatDate(drawingData.time);
 
-    const artistName = document.createElement("p");
-    artistName.classList.add("drawingInformation");
-    artistName.innerText = "artist : " + drawingData.artist;
+    // Div to contain text and image
+    const imageTextCombo = document.createElement("div");
+    imageTextCombo.classList.add("image-text-combo");
 
-    const winnerName = document.createElement("p");
-    winnerName.classList.add("drawingInformation");
-    winnerName.innerText = "winner: " + drawingData.winner;
-
-    const timeWon = document.createElement("p");
-    timeWon.classList.add("drawingInformation");
-    timeWon.innerText = "Time of win: " + drawingData.time;
-
-    const drawingId = document.createElement("p");
-    drawingId.classList.add("drawingInformation");
-    drawingId.innerText = "Drawing chosen: " + drawingData.name;
-
-    informationText.appendChild(artistName);
-    informationText.appendChild(winnerName);
-    informationText.appendChild(timeWon);
-    informationText.appendChild(drawingId);
-
-    informationDiv.appendChild(informationText);
-  });
-
-  // Image Data WIP
-  data.drawings.map((x) => {
+    // Child div to contain image
     const imageInformation = document.createElement("div");
-    console.log(x);
+    imageInformation.classList.add("image-information");
+
     const image = document.createElement("img");
-    image.src = x.image;
+    image.classList.add("raw-image");
+    image.src = drawingData.image;
+    // Add image element to parent div
     imageInformation.appendChild(image);
-    imageDiv.appendChild(imageInformation);
+
+    // Add child div to contain text
+    const textInformation = document.createElement("div");
+    textInformation.classList.add("text-information");
+
+    const artistName = document.createElement("span");
+    artistName.classList.add("game-information");
+    artistName.innerText = "Artist name \t: " + drawingData.artist;
+
+    const winnerName = document.createElement("span");
+    winnerName.classList.add("game-information");
+    winnerName.innerText = "Winner name : " + drawingData.winner;
+
+    const timeWon = document.createElement("span");
+    timeWon.classList.add("game-information");
+    timeWon.innerText = "Time of win: " + formattedDate;
+
+    const drawingId = document.createElement("span");
+    drawingId.classList.add("game-information");
+    drawingId.innerText = "Drawing name: " + drawingData.name;
+
+    // Add text to parent div
+    textInformation.appendChild(artistName);
+    textInformation.appendChild(winnerName);
+    textInformation.appendChild(timeWon);
+    textInformation.appendChild(drawingId);
+
+    // Add both div children to parent div
+    imageTextCombo.appendChild(imageInformation);
+    imageTextCombo.appendChild(textInformation);
+
+    // Add combo div to parent in html
+    imageHistory.appendChild(imageTextCombo);
   });
 }
 getHistory();

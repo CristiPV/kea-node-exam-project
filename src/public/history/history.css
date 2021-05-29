@@ -1,0 +1,31 @@
+#image-history {
+  display: flex;
+  width: 70vw;
+  flex-direction: column;
+}
+
+.image-text-combo {
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+}
+.image-information {
+    margin: 5vh;
+}
+
+.raw-image {
+    display: flex;
+    width: 20vw;
+    border: 1px dotted gray;
+    border-radius: 35px;
+}
+
+.text-information {
+  display: flex;
+  flex-direction: column;
+  margin-left: 5vw;
+}
+
+.game-information {
+  font-size: 20px;
+}
