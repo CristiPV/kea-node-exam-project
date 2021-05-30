@@ -14,6 +14,31 @@
 .image-information {
     margin: 5vh;
 }
+.artist-container {
+  display: flex;
+  justify-content: space-between;
+}
+.winner-container {
+  display: flex;
+  justify-content: space-between;
+}
+.time-container {
+  display: flex;
+  justify-content: space-between;
+}
+.drawing-id-div {
+  display: flex;
+  justify-content: space-between;
+}
+
+.game-information {
+  width: 7vw;
+  text-align: left;
+}
+.game-presentation {
+  width: 7vw;
+}
+
 
 .raw-image {
     width: 20vw;
@@ -25,8 +50,5 @@
   display: flex;
   flex-direction: column;
   margin-left: 5vw;
-}
-
-.game-information {
-  margin-top: 1vh;
+  width: 16vw;
 }

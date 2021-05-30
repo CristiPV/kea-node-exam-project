@@ -29,7 +29,7 @@ async function getHistory() {
 
     // Div to contain both text and image
     const imageTextCombo = document.createElement("div");
-    imageTextCombo.classList.add("image-text-combo");
+    imageTextCombo.classList.add(...["box", "image-text-combo"]);
 
     // ---- Image ---
     // Child div to contain image
