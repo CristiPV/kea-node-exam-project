@@ -1,0 +1,54 @@
+#image-history {
+  display: flex;
+  width: 70vw;
+  flex-direction: column-reverse;
+  justify-content: center;
+  margin-left: 15vw;
+}
+
+.image-text-combo {
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+}
+.image-information {
+    margin: 5vh;
+}
+.artist-container {
+  display: flex;
+  justify-content: space-between;
+}
+.winner-container {
+  display: flex;
+  justify-content: space-between;
+}
+.time-container {
+  display: flex;
+  justify-content: space-between;
+}
+.drawing-id-div {
+  display: flex;
+  justify-content: space-between;
+}
+
+.game-information {
+  width: 7vw;
+  text-align: left;
+}
+.game-presentation {
+  width: 7vw;
+}
+
+
+.raw-image {
+    width: 20vw;
+    border: 1px dotted gray;
+    border-radius: 35px;
+}
+
+.text-information {
+  display: flex;
+  flex-direction: column;
+  margin-left: 5vw;
+  width: 16vw;
+}
