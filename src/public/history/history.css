@@ -1,7 +1,9 @@
 #image-history {
   display: flex;
   width: 70vw;
-  flex-direction: column;
+  flex-direction: column-reverse;
+  justify-content: center;
+  margin-left: 15vw;
 }
 
 .image-text-combo {
@@ -14,7 +16,6 @@
 }
 
 .raw-image {
-    display: flex;
     width: 20vw;
     border: 1px dotted gray;
     border-radius: 35px;
@@ -27,5 +28,5 @@
 }
 
 .game-information {
-  font-size: 20px;
+  margin-top: 1vh;
 }
